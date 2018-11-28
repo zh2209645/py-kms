@@ -18,7 +18,7 @@ def epidGenerator(kmsId, version, lcid):
         # Generate Part 2: Group ID and Product Key ID Range
         for csvlkitem in csvlkitems:
                 try:
-                        if kmsId in [ uuid.UUID(kmsitem) for kmsitem in csvlkitem['Activate'] ]:
+                        if kmsId in [ uuid.UUID(kmsitem) for kmsitem in csvlkitem['Activate'] if "?" not in kmsitem ]:
                                 pkeys.append( (csvlkitem['GroupId'], csvlkitem['MinKeyId'], csvlkitem['MaxKeyId'], csvlkitem['InvalidWinBuild']) )
                         else:
                                 # fallback to Windows Server 2019 parameters.
