@@ -176,6 +176,8 @@ skuId TEXT, licenseStatus TEXT, lastRequestTime INTEGER, kmsEpid TEXT, requestCo
                                         count = int(kmsitem['NCountPolicy'])
                                 except KeyError:
                                         count = 25
+                                except ValueError:
+                                        count = 0
                                 
                                 if self.config["CurrentClientCount"] <= count:
                                         currentClientCount = count + 1
@@ -185,6 +187,8 @@ skuId TEXT, licenseStatus TEXT, lastRequestTime INTEGER, kmsEpid TEXT, requestCo
                                 skuitems = kmsitem['SkuItems']
                                 for skuitem in skuitems:
                                         try:
+                                                if len(skuitem['Id']) == 0:
+                                                        continue
                                                 if uuid.UUID(skuitem['Id']) == skuId:
                                                         skuName = skuitem['DisplayName']
                                                         break
