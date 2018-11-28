@@ -1,3 +1,7 @@
+### py-kms_2018-11-28
+kmsBase.py and kmsPidGenerator.py
+ - fixed bugs due to wrong data in KmsDataBase.xml
+ 
 ### py-kms_2018-11-15
  - Implemented some good modifications inspired by [this](https://github.com/ThunderEX/py-kms) other fork.
  	- Clean up code ( deleted no longer useful files randomHWID.py, randomEPID.py, timezones.py;
