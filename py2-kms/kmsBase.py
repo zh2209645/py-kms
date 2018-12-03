@@ -29,8 +29,8 @@ class UUID(Structure):
 		return uuid.UUID(bytes_le=str(self))
 
 class kmsBase:
-        def __init__(self, data, config):
-                self.data = data
+	def __init__(self, data, config):
+		self.data = data
 		self.config = config
 		
 	class kmsRequestStruct(Structure):
@@ -115,8 +115,8 @@ class kmsBase:
 
 
 	def getPadding(self, bodyLength):
-                ## https://forums.mydigitallife.info/threads/71213-Source-C-KMS-Server-from-Microsoft-Toolkit?p=1277542&viewfull=1#post1277542
-                return 4 + (((~bodyLength & 3) + 1) & 3)
+		## https://forums.mydigitallife.info/threads/71213-Source-C-KMS-Server-from-Microsoft-Toolkit?p=1277542&viewfull=1#post1277542
+		return 4 + (((~bodyLength & 3) + 1) & 3)
 
 	def serverLogic(self, kmsRequest):
 		if self.config['sqlite'] and self.config['dbSupport']:
@@ -131,7 +131,7 @@ class kmsBase:
 skuId TEXT, licenseStatus TEXT, lastRequestTime INTEGER, kmsEpid TEXT, requestCount INTEGER)")
 
 				except sqlite3.Error, e:
-                                        logging.error("Error %s:" % e.args[0])
+					logging.error("Error %s:" % e.args[0])
 					sys.exit(1)
 
 				finally:
@@ -140,8 +140,8 @@ skuId TEXT, licenseStatus TEXT, lastRequestTime INTEGER, kmsEpid TEXT, requestCo
 						con.close()
 
 		shell_message(nshell = 15)
-                logging.debug("KMS Request Bytes: \n%s\n" % justify(binascii.b2a_hex(str(kmsRequest))))
-                logging.debug("KMS Request: \n%s\n" % justify(kmsRequest.dump(print_to_stdout = False)))
+		logging.debug("KMS Request Bytes: \n%s\n" % justify(binascii.b2a_hex(str(kmsRequest))))
+		logging.debug("KMS Request: \n%s\n" % justify(kmsRequest.dump(print_to_stdout = False)))
 			
 		clientMachineId = kmsRequest['clientMachineId'].get()
 		applicationId = kmsRequest['applicationId'].get()
@@ -150,55 +150,55 @@ skuId TEXT, licenseStatus TEXT, lastRequestTime INTEGER, kmsEpid TEXT, requestCo
 
 		# Localize the request time, if module "tzlocal" is available.
 		try:
-                        from tzlocal import get_localzone
-                        from pytz.exceptions import UnknownTimeZoneError
-                        try:
-                                tz = get_localzone()
-                                local_dt = tz.localize(requestDatetime)
-                        except UnknownTimeZoneError:
-                                logging.warning('Unknown time zone ! Request time not localized.')
-                                local_dt = requestDatetime
-                except ImportError:
-                        logging.warning('Module "tzlocal" not available ! Request time not localized.')
-                        local_dt = requestDatetime
+			from tzlocal import get_localzone
+			from pytz.exceptions import UnknownTimeZoneError
+			try:
+				tz = get_localzone()
+				local_dt = tz.localize(requestDatetime)
+			except UnknownTimeZoneError:
+				logging.warning('Unknown time zone ! Request time not localized.')
+				local_dt = requestDatetime
+		except ImportError:
+			logging.warning('Module "tzlocal" not available ! Request time not localized.')
+			local_dt = requestDatetime
 
 		# Get SkuId, AppId and client threshold.
 		appName, skuName = applicationId, skuId
 		
 		kmsdb = kmsDB2Dict()
 
-                appitems = kmsdb[2]
-                for appitem in appitems:
-                        kmsitems = appitem['KmsItems']
-                        for kmsitem in kmsitems:
+		appitems = kmsdb[2]
+		for appitem in appitems:
+			kmsitems = appitem['KmsItems']
+			for kmsitem in kmsitems:
 
-                                # Activation threshold.
-                                try:
-                                        count = int(kmsitem['NCountPolicy'])
-                                except KeyError:
-                                        count = 25
-								except ValueError:
-									    count = 0
-                                
-                                if self.config["CurrentClientCount"] <= count:
-                                        currentClientCount = count + 1
-                                else:
-                                        currentClientCount = self.config["CurrentClientCount"]
-                                
-                                skuitems = kmsitem['SkuItems']
-                                for skuitem in skuitems:
-                                        try:
-												if len(skuitem['Id']) == 0:
-														continue
-                                                if uuid.UUID(skuitem['Id']) == skuId:
-                                                        skuName = skuitem['DisplayName']
-                                                        break
-                                        except IndexError:
-                                                pass
-                                        
-                        if uuid.UUID(appitem['Id']) == applicationId:
-                                appName = appitem['DisplayName']
-                                
+				# Activation threshold.
+				try:
+					count = int(kmsitem['NCountPolicy'])
+				except KeyError:
+					count = 25
+				except ValueError:
+					count = 0
+				
+				if self.config["CurrentClientCount"] <= count:
+					currentClientCount = count + 1
+				else:
+					currentClientCount = self.config["CurrentClientCount"]
+				
+				skuitems = kmsitem['SkuItems']
+				for skuitem in skuitems:
+					try:
+						if len(skuitem['Id']) == 0:
+							continue
+						if uuid.UUID(skuitem['Id']) == skuId:
+							skuName = skuitem['DisplayName']
+							break
+					except IndexError:
+						pass
+						
+			if uuid.UUID(appitem['Id']) == applicationId:
+				appName = appitem['DisplayName']
+					
 
 		infoDict = {
 			"machineName" : kmsRequest.getMachineName(),
@@ -210,12 +210,12 @@ skuId TEXT, licenseStatus TEXT, lastRequestTime INTEGER, kmsEpid TEXT, requestCo
 			"kmsEpid" : None
 		}
 
-                logging.info("Machine Name: %s" % infoDict["machineName"])
-                logging.info("Client Machine ID: %s" % infoDict["clientMachineId"])
-                logging.info("Application ID: %s" % infoDict["appId"])
-                logging.info("SKU ID: %s" % infoDict["skuId"])
-                logging.info("License Status: %s" % infoDict["licenseStatus"])
-                logging.info("Request Time: %s" % local_dt.strftime('%Y-%m-%d %H:%M:%S %Z (UTC%z)'))
+		logging.info("Machine Name: %s" % infoDict["machineName"])
+		logging.info("Client Machine ID: %s" % infoDict["clientMachineId"])
+		logging.info("Application ID: %s" % infoDict["appId"])
+		logging.info("SKU ID: %s" % infoDict["skuId"])
+		logging.info("License Status: %s" % infoDict["licenseStatus"])
+		logging.info("Request Time: %s" % local_dt.strftime('%Y-%m-%d %H:%M:%S %Z (UTC%z)'))
 
 		if self.config['sqlite'] and self.config['dbSupport']:
 			con = None
@@ -251,7 +251,7 @@ clientMachineId=:clientMachineId;", infoDict)
 clientMachineId=:clientMachineId;", infoDict)
 
 				except sqlite3.Error, e:
-                                        logging.error("Error %s:" % e.args[0])
+					logging.error("Error %s:" % e.args[0])
 					
 			except sqlite3.Error, e:
                                 logging.error("Error %s:" % e.args[0])
@@ -296,11 +296,11 @@ clientMachineId=:clientMachineId;", infoDict)
                                                             (str(response["kmsEpid"].decode('utf-16le')), str(kmsRequest['clientMachineId'].get())))
 
 				except sqlite3.Error, e:
-                                        logging.error("Error %s:" % e.args[0])
+					logging.error("Error %s:" % e.args[0])
 					
 			except sqlite3.Error, e:
-                                logging.error("Error %s:" % e.args[0])
-                                sys.exit(1)
+				logging.error("Error %s:" % e.args[0])
+				sys.exit(1)
 			finally:
 				if con:
 					con.commit()

@@ -92,20 +92,20 @@ The default is \"364F463A8863D35F\" or type \"random\" to auto generate the HWID
         
         # Check LCID.
         # http://stackoverflow.com/questions/3425294/how-to-detect-the-os-default-language-in-python
-	if not config['lcid'] or (config['lcid'] not in ValidLcid):		
-		if hasattr(sys, 'implementation') and sys.implementation.name == 'cpython':
-			config['lcid'] = 1033
-		elif os.name == 'nt':
-			import ctypes
+        if not config['lcid'] or (config['lcid'] not in ValidLcid):		
+        	if hasattr(sys, 'implementation') and sys.implementation.name == 'cpython':
+        		config['lcid'] = 1033
+        	elif os.name == 'nt':
+        		import ctypes
 
-			config['lcid'] = ctypes.windll.kernel32.GetUserDefaultUILanguage()  # TODO: or GetSystemDefaultUILanguage?
-		else:
-			import locale
+        		config['lcid'] = ctypes.windll.kernel32.GetUserDefaultUILanguage()  # TODO: or GetSystemDefaultUILanguage?
+        	else:
+        		import locale
 
-			try:
-				config['lcid'] = next(k for k, v in locale.windows_locale.items() if v == locale.getdefaultlocale()[0])
-			except StopIteration:
-				config['lcid'] = 1033
+        		try:
+        			config['lcid'] = next(k for k, v in locale.windows_locale.items() if v == locale.getdefaultlocale()[0])
+        		except StopIteration:
+        			config['lcid'] = 1033
 
         try:
                 import sqlite3            

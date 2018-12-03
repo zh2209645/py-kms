@@ -102,8 +102,8 @@ class kmsRequestV4(kmsBase):
 
 		## Debug stuff.
 		shell_message(nshell = 16)                
-                logging.debug("KMS V4 Response: \n%s\n" % justify(response.dump(print_to_stdout = False)))
-                logging.debug("KMS V4 Response Bytes: \n%s\n" % justify(binascii.b2a_hex(str(response))))
+		logging.debug("KMS V4 Response: \n%s\n" % justify(response.dump(print_to_stdout = False)))
+		logging.debug("KMS V4 Response Bytes: \n%s\n" % justify(binascii.b2a_hex(str(response))))
 			
 		return str(response)
 
@@ -120,7 +120,7 @@ class kmsRequestV4(kmsBase):
 
 		## Debug stuff.
 		shell_message(nshell = 10)                
-                logging.debug("Request V4 Data: \n%s\n" % justify(request.dump(print_to_stdout = False)))
-                logging.debug("Request V4: \n%s\n" % justify(binascii.b2a_hex(str(request))))
+		logging.debug("Request V4 Data: \n%s\n" % justify(request.dump(print_to_stdout = False)))
+		logging.debug("Request V4: \n%s\n" % justify(binascii.b2a_hex(str(request))))
                         
 		return request
